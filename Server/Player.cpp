@@ -70,13 +70,24 @@ void Player::initializeHand(std::vector<Card>& deck, unsigned int numCards)
 // Inserts card into the hand in order.
 void Player::insertCardToHand(const Card& c)
 {
+	if(hand.size() == 0) hand.push_back(c);
+	else 
+	{
+		auto iterator = hand.begin();
+		while (c < *iterator && iterator < hand.end())
+		{
+			iterator++;
+			if (iterator == hand.end()) break;
+		}
+		hand.emplace(iterator, c);
+	}
   /*auto iterator = hand.begin();
   while (c < *iterator && iterator < hand.end())
   {
     iterator++;
   }
   hand.emplace(iterator, c);*/
-	hand.push_back(c);
+	
 }
 
 // Attempts to remove card from hand. If card is in hand, it will be removed

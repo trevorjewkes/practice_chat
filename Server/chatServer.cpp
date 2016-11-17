@@ -55,6 +55,17 @@ public:
   {
 	HeartsGame newGame(players);
 	games.push_back(newGame);
+	games[games.size() - 1].play_Hearts();
+	for (int i = 0; i < players.size(); i++)
+	{
+		for (auto participant : participants_)
+		{
+			if (participant->id == players[i].getId())
+			{
+				sendUpdate(participant, players[i].getIp(), games.size() - 1);
+			}
+		}
+	}
   }
 
   void join(chat_participant_ptr participant, std::string ip)
@@ -196,11 +207,13 @@ public:
 			  tmpPlayerId = lobby[i].getId();
 		  }
 	  }
+	  int gameCompleted = -1;
 	  for (int i = 0; i < gamePlayers.size(); i++)
 	  {
 		  if (gamePlayers[i].size() < 4)
 		  {
 			  gamePlayers[i].push_back(player);
+			  if (gamePlayers[i].size() == 4) gameCompleted = i;
 			  gameFound = true;
 		  }
 	  }
@@ -214,6 +227,10 @@ public:
 	  {
 		  if (participant->id == tmpPlayerId)
 			  sendJoinPublicReply(participant, true);
+	  }
+	  if (gameCompleted != -1)
+	  {
+		  initGame(gamePlayers[gameCompleted]);
 	  }
 
   }
@@ -464,6 +481,7 @@ public:
 				  message += std::to_string(games[gameIdx].getPlayers()[i].getHand()[j].getSuit()) + ' ';
 				  message += std::to_string(games[gameIdx].getPlayers()[i].getHand()[j].getValue()) + ' ';
 			  }
+			  break;
 		  }
 	  }
 	  message += "CENTER ";

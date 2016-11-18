@@ -17,7 +17,7 @@ public:
 	void passCards(int round);  
 	int endTurn(int currentPlayer);
 	void endRound();
-	void setPassCards(std::vector<Card> cards, std::string name);
+	int setPassCards(std::vector<Card> cards, std::string name);
 	int playCard(std::vector<Card> cards, std::string name);
 	std::vector<Player> getPlayers() { return players; }
 	std::vector<Card> getCenterPile() { return centerPile; }

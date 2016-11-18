@@ -274,11 +274,22 @@ public:
 			  
 			  if(nextTurn == -1)
 				  id = games[gameIdx].getPlayers()[i].getId();
+			  if (nextTurn == -2)
+			  {
+				  games[gameIdx].endRound();				  
+			  }
 			  else 
 				  id = games[gameIdx].getPlayers()[(i+1)%games[gameIdx].getPlayers().size()].getId();
 		  }
 	  }
-
+	  for (int i = 0; i < games[gameIdx].getPlayers().size(); i++)
+	  {
+		  for (auto participant : participants_)
+		  {
+			  if (participant->id == games[gameIdx].getPlayers()[i].getId())
+				  sendUpdate(participant, ip, gameIdx);
+		  }
+	  }
 	  for (auto participant : participants_)
 	  {
 		  if (participant->id == id)
@@ -300,7 +311,15 @@ public:
 		  if (games[gameIdx].getPlayers()[i].getIp() == ip)
 			  name = games[gameIdx].getPlayers()[i].getName();
 	  }
-	  games[gameIdx].setPassCards(cards, name);
+	  int player = games[gameIdx].setPassCards(cards, name);
+	  if (player != -1)
+	  {
+		  for (auto participant : participants_)
+		  {
+			  if(participant->id == games[gameIdx].getPlayers()[player].getId())
+				  sendRequest(participant, "PLAY");
+		  }
+	  }
   }
 
   void handleLogin(std::string name, std::string password, std::string ip)

@@ -1,0 +1,9 @@
+cmake_minimum_required (VERSION 2.8)
+project (wxNetwork CXX)
+
+find_package(wxWidgets COMPONENTS net gl core base)
+include(${wxWidgets_USE_FILE})
+
+add_executable(run chatClient.cpp chat_message.hpp)
+target_compile_options(run PUBLIC -std=c++11 -g -Werror -Wall -pedantic)
+target_link_libraries(run ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES})
